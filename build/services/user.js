@@ -12,14 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.create = void 0;
+exports.getUser = exports.create = void 0;
 const user_1 = __importDefault(require("../models/user"));
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
-function hashPassword(pass) {
-    const salt = bcryptjs_1.default.genSaltSync(10);
-    const hash = bcryptjs_1.default.hashSync(pass, salt);
-    return hash;
-}
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
 /**
  * userData example
  * @param userData = {
@@ -36,7 +32,7 @@ const create = (userData) => __awaiter(void 0, void 0, void 0, function* () {
             name: name,
             firstName: firstName,
             mail: mail,
-            password: hashPassword(password)
+            password: password
         });
         const savedUser = yield newUser.save();
         return savedUser;
@@ -46,13 +42,16 @@ const create = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.create = create;
-const login = (userData) => __awaiter(void 0, void 0, void 0, function* () {
+const getUser = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { mail, password } = userData;
-        const logUser = user_1.default.findOne({});
+        const logUser = user_1.default.findOne({
+            mail: mail
+        });
+        return logUser;
     }
     catch (error) {
         throw console.log(error);
     }
 });
-exports.login = login;
+exports.getUser = getUser;

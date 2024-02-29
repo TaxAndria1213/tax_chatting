@@ -1,12 +1,8 @@
+import { hashPassword } from "../middleware/user/user"
 import User from "../models/user"
-import bcrypt from "bcryptjs"
+import express from "express"
+const app = express()
 
-
-function hashPassword(pass: string): string {
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(pass, salt)
-    return hash
-}
 
 
 /**
@@ -21,11 +17,12 @@ function hashPassword(pass: string): string {
 export const create = async (userData: any) => {
     try {
         const { name, firstName, mail, password } = userData
+
         const newUser = new User({
             name: name,
             firstName: firstName,
             mail: mail,
-            password: hashPassword(password)
+            password: password
         })
         const savedUser = await newUser.save()
 
@@ -37,15 +34,16 @@ export const create = async (userData: any) => {
 
 }
 
-export const login = async (userData:any) => {
+export const getUser = async (userData: any) => {
     try {
-        const {mail, password} = userData
+        const { mail, password } = userData
         const logUser = User.findOne({
-            
+            mail: mail
         })
+        return logUser
 
     } catch (error) {
         throw console.log(error);
-        
+
     }
 }
